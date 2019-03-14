@@ -32,8 +32,10 @@ def load_data(db_filepath):
     # Load data from database
     engine = create_engine('sqlite:///{}'.format(db_filepath))
     df = pd.read_sql_table('Message', engine)
+
     # drop columns with null
     df = df[~(df.isnull().any(axis=1))|((df.original.isnull())&~(df.offer.isnull()))]
+
     # Create X and y datasets    
     X = df['message']
     y = df.iloc[:,4:]
@@ -60,7 +62,7 @@ def tokenize(text):
 
 def length_of_messages(data):
 
-    return np.array([len(text) for text in data]).reshape(-1, 1)
+    return np.array([len(tx) for tx in data]).reshape(-1, 1)
 
 def build_model():
     """
