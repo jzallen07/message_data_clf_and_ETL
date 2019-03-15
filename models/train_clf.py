@@ -76,15 +76,18 @@ def build_model():
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer = tokenize, min_df = 5)),
         ('tfidf', TfidfTransformer(use_idf = True)),
-        ('clf', MultiOutputClassifier(RandomForestClassifier(n_estimators = 12,
-                                                             min_samples_split = 8)))
+        ('clf', MultiOutputClassifier(RandomForestClassifier(n_estimators = 50,
+                                                             min_samples_split = 3)))
     ])
     
     # Create parameters dictionary
-    parameters = {'vect__min_df': [1, 5],
-                  'tfidf__use_idf':[True, False],
-                  'clf__estimator__n_estimators':[10, 25], 
-                  'clf__estimator__min_samples_split':[2, 5, 10]}
+    parameters = {  'vect__ngram_range': ((1, 1), (1, 2)),
+                    'tfidf__use_idf': [True, False],
+                    'tfidf__norm': ['l1', 'l2'],
+                    'clf__estimator__n_estimators': [50, 100, 150],
+                    'clf__estimator__min_samples_split': [2, 4],
+                    'clf__estimator__max_depth':[2,4,6]
+                    }
     
     
     # Create grid search object
@@ -98,7 +101,7 @@ def evaluate_model(model, X_test, y_test, cat_names):
     Args:
     model: model object. Fitted model object.
     X_test: dataframe. Dataframe containing test features dataset.
-    Y_test: dataframe. Dataframe containing test labels dataset.
+    y_test: dataframe. Dataframe containing test labels dataset.
     category_names: list of strings. List containing category names.
     
     Returns:
@@ -106,10 +109,10 @@ def evaluate_model(model, X_test, y_test, cat_names):
     """ 
     
     # make predictions with model
-    Y_pred = model.predict(X_test)
+    y_pred = model.predict(X_test)
 
     # print scores
-    print(classification_report(Y_test.iloc[:,1:].values, np.array([x[1:] for x in y_pred]), 
+    print(classification_report(y_test.iloc[:,1:].values, np.array([x[1:] for x in y_pred]), 
         target_names=cat_names))
 
 
@@ -126,7 +129,7 @@ def main():
     if len(sys.argv) == 3:
         db_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(db_filepath))
-        X, y, category_names = load_data(database_filepath)
+        X, y, cat_names = load_data(db_filepath)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
         
         print('Building model...')

@@ -41,11 +41,11 @@ def length_of_messages(data):
     
 db_filepath = 'data/DisasterResponse.db'
 # load data
-engine = create_engine('sqlite:///{}'.format(database_filepath))
+engine = create_engine('sqlite:///{}'.format(db_filepath))
 df = pd.read_sql_table('Message', engine)
 
 # load model
-model = joblib.load("/home/workspace/models/classifier.pkl")
+model = joblib.load("../models/classifier.pkl")
 
 # msg len
 df['text_length'] = length_of_messages(df['message'])
