@@ -6,9 +6,9 @@ Data Engineering: ETL and ML Pipeline preparation, with web app, and data visual
 1. Run the following commands in the project's root directory to set up your database and model.
 
     - To run ETL pipeline
-        `python data/etl_pipeline.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db`
+        `python data/etl.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db`
     - To run ML pipeline that trains classifier and saves
-        `python models/train.py data/DisasterResponse.db models/classifier.pkl`
+        `python models/train_clf.py data/DisasterResponse.db models/classifier.pkl`
 
 2. Run the following command in the app's directory to run your web app.
     `python run.py`
